@@ -1,0 +1,202 @@
+module testcase (
+    input clk,  // clock 
+    input rst,  // reset 
+    output aout[8], 
+    output bout[8], 
+    output out[8],  // output result 
+    output alufn[6] //led indicates which state we are checking 
+    output io_seg [8],      // 7-segment LEDs on IO Shield
+    output io_sel [4]      // Digit select on IO Shield
+   )  
+
+  ) {
+  sig a[8];
+  sig b[8];
+  sig opcode[6];
+  
+  
+  .clk(clk) {
+  // The reset conditioner is used to synchronize the reset signal to the FPGA
+  // clock. This ensures the entire FPGA comes out of reset at the same time.
+    edge_detector edge_detector(#RISE(1), #FALL(0));
+    button_conditioner button_cond;
+  .rst(rst){
+    fsm state(#INIT(START)) = {START,ADD,SUB,MUL,DIV,AND,OR,XOR,NAND,NOR,XNOR,A,B,SHL,SHR,SRA,CMPEQ,CMPLE,CMPLT,PASS};  // state machine that stores all opcode cases
+    alu my_alu(.a(a),.b(b),.alufn(opcode)); 
+    multi_seven_seg seg;
+
+  }
+}
+  
+  
+  always {
+  
+    io_seg = ~seg.seg; //connect segments to the driver
+    io_sel = ~seg.sel; //connect digit select to the driver  
+    opcode = 0;
+    out = my_alu.out;
+    a_out = a;
+    b_out = b;
+    alufn = opcode;
+    
+    // button and edge detector configure
+    button_cond.in = io_button[1];
+    edge_detector.in = button_cond.out;
+    
+    case(state.q){
+          state.START:
+             seg.values = {4hD, 4h7, 4h6, 4hE};
+             if (edge_detector.out)
+             state.d = state.ADD;
+          
+          state.ADD:
+             opcode = 6b00000;
+             alufn = opcode;
+             a = 62;
+             b = 8;
+             if (my_alu.out == 70 && edge_detector.out)
+                state.d = state.SUB;
+          
+          state.SUB:
+              opcode = 6h01;
+              alufn = opcode;
+              a = 62;
+              b = 8;
+              if (my_alu.out == 54 && edge_detector.out)
+                state.d = state.MUL;
+          
+          state.MUL:
+              opcode = 6h03;
+              alufn = opcode;
+              a = 6;
+              b = 8;
+              if (my_alu.out == 48 && edge_detector.out)
+                state.d = state.DIV;
+          
+          state.DIV:
+              opcode = 6h02;
+              alufn = opcode;
+              a = 48;
+              b = 8;
+              if (my_alu.out == 6 && edge_detector.out)
+                state.d = state.AND;
+          
+          state.AND:
+              opcode = 6h18;
+              alufn = opcode;
+              a = 6;
+              b = 8;
+              if (my_alu.out == 0 && edge_detector.out)
+                state.d = state.OR;
+          
+          state.OR:
+              opcode = 6h1E;
+              alufn = opcode;
+              a = 6;
+              b = 8;
+              if (my_alu.out == 14 && edge_detector.out)
+                state.d = state.XOR;
+          
+          state.XOR:
+              opcode = 6h16;
+              alufn = opcode;
+              a = 6;
+              b = 8;
+              if (my_alu.out == 14 && edge_detector.out)
+                state.d = state.NAND;
+          
+          state.NAND:
+              opcode = 6h17;
+              alufn = opcode;
+              a = 6;
+              b = 8;
+              if (my_alu.out == 15 && edge_detector.out)
+                state.d = state.NOR;
+          
+          state.NOR:
+              opcode = 6h1;
+              alufn = opcode;
+              a = 6;
+              b = 8;
+              if (my_alu.out == 1 && edge_detector.out)
+                state.d = state.XNOR;
+          
+          state.XNOR:
+              opcode = 6h19;
+              alufn = opcode;
+              a = 6;
+              b = 8;
+              if (my_alu.out == 1 && edge_detector.out)
+                state.d = state.A;
+          
+          state.A:
+              opcode = 6h1A;
+              alufn = opcode;
+              a = 45;
+              b = 21;
+              if (my_alu.out == 45 && edge_detector.out)
+                state.d = state.B;
+          
+          state.B:
+              opcode = 6h1C;
+              alufn = opcode;
+              a = 32;
+              b = 54;
+              if (my_alu.out == 54 && edge_detector.out)
+                state.d = state.SHL;
+          
+          state.SHL:
+              opcode = 6h20;
+              alufn = opcode;
+              a = 15;
+              b = 2;
+              if (my_alu.out == 60 && edge_detector.out)
+                state.d = state.SHR;
+          
+          state.SHR:
+              opcode = 6h21;
+              alufn = opcode;
+              a = 64;
+              b = 3;
+              if (my_alu.out == 8 && edge_detector.out)
+                state.d = state.SRA;
+          
+          state.SRA:
+              opcode = 6h23;
+              alufn = opcode;
+              a = -64;
+              b = 4;
+              if (my_alu.out == -4 && edge_detector.out)
+                state.d = state.CMPEQ;
+          
+          state.CMPEQ:
+              opcode = 6h33;
+              alufn = opcode;
+              a = 29;
+              b = 9;
+              if (my_alu.out == 0 && edge_detector.out)
+                state.d = state.CMPLE;
+          
+          state.CMPLE:
+              opcode = 6h35;
+              alufn = opcode;
+              a = 58;
+              b = 58;
+              if (my_alu.out == 1 && edge_detector.out)
+                state.d = state.CMPLT;
+          
+          state.CMPLT:
+              opcode = 6h37;
+              alufn = opcode;
+              a = 34;
+              b = 6;
+              if (my_alu.out == 0 && edge_detector.out)
+                state.d = state.PASS;
+          
+          state.PASS:
+              // display pass
+    }
+
+  }
+  
+}
