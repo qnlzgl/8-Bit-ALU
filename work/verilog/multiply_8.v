@@ -4,7 +4,7 @@
    This is a temporary file and any changes made to it will be destroyed.
 */
 
-module multiply_7 (
+module multiply_8 (
     input [7:0] a,
     input [7:0] b,
     input [1:0] alufn,

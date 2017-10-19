@@ -21,7 +21,7 @@ module alu_2 (
   wire [1-1:0] M_aluadder_z;
   wire [1-1:0] M_aluadder_v;
   wire [1-1:0] M_aluadder_n;
-  adder_3 aluadder (
+  adder_4 aluadder (
     .a(a),
     .b(b),
     .alufn(alufn[0+0-:1]),
@@ -31,28 +31,28 @@ module alu_2 (
     .n(M_aluadder_n)
   );
   wire [8-1:0] M_alucomparator_op;
-  comparator_4 alucomparator (
+  comparator_5 alucomparator (
     .a(a),
     .b(b),
     .alufn(alufn[1+1-:2]),
     .op(M_alucomparator_op)
   );
   wire [8-1:0] M_aluboolean_out;
-  boolean_5 aluboolean (
+  boolean_6 aluboolean (
     .a(a),
     .b(b),
     .alufn(alufn[0+3-:4]),
     .out(M_aluboolean_out)
   );
   wire [8-1:0] M_alushifter_out;
-  shifter_6 alushifter (
+  shifter_7 alushifter (
     .a(a),
     .b(b),
     .alufn(alufn[0+1-:2]),
     .out(M_alushifter_out)
   );
   wire [8-1:0] M_alumultiply_out;
-  multiply_7 alumultiply (
+  multiply_8 alumultiply (
     .a(a),
     .b(b),
     .alufn(alufn[0+1-:2]),
@@ -62,7 +62,7 @@ module alu_2 (
   wire [7-1:0] M_seg_seg;
   wire [4-1:0] M_seg_sel;
   reg [16-1:0] M_seg_values;
-  multi_seven_seg_8 seg (
+  multi_seven_seg_9 seg (
     .clk(clk),
     .rst(rst),
     .values(M_seg_values),

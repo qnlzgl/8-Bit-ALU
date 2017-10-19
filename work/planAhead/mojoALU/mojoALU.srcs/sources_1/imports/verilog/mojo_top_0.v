@@ -48,6 +48,23 @@ module mojo_top_0 (
     .io_seg(M_testalu_io_seg),
     .io_sel(M_testalu_io_sel)
   );
+  wire [8-1:0] M_my_testcase_aout;
+  wire [8-1:0] M_my_testcase_bout;
+  wire [8-1:0] M_my_testcase_out;
+  wire [6-1:0] M_my_testcase_alufn;
+  wire [8-1:0] M_my_testcase_io_seg;
+  wire [4-1:0] M_my_testcase_io_sel;
+  testcase_3 my_testcase (
+    .clk(clk),
+    .rst(rst),
+    .io_button(io_button),
+    .aout(M_my_testcase_aout),
+    .bout(M_my_testcase_bout),
+    .out(M_my_testcase_out),
+    .alufn(M_my_testcase_alufn),
+    .io_seg(M_my_testcase_io_seg),
+    .io_sel(M_my_testcase_io_sel)
+  );
   
   always @* begin
     M_reset_cond_in = ~rst_n;
@@ -59,10 +76,18 @@ module mojo_top_0 (
     io_led = 24'h000000;
     io_seg = 8'hff;
     io_sel = 4'hf;
-    io_led[16+7-:8] = M_testalu_out;
-    io_led[8+7-:8] = io_dip[8+7-:8];
-    io_led[0+7-:8] = io_dip[0+7-:8];
-    io_seg = M_testalu_io_seg;
-    io_sel = M_testalu_io_sel;
+    if (io_dip[16+7+0-:1] == 1'h1) begin
+      io_led[16+7-:8] = M_my_testcase_out;
+      io_led[8+7-:8] = M_my_testcase_bout;
+      io_led[0+7-:8] = M_my_testcase_aout;
+      io_seg = M_my_testcase_io_seg;
+      io_sel = M_my_testcase_io_sel;
+    end else begin
+      io_led[16+7-:8] = M_testalu_out;
+      io_led[8+7-:8] = io_dip[8+7-:8];
+      io_led[0+7-:8] = io_dip[0+7-:8];
+      io_seg = M_testalu_io_seg;
+      io_sel = M_testalu_io_sel;
+    end
   end
 endmodule

@@ -1,13 +1,13 @@
-set projDir "C:/Users/San Persie/Desktop/New folder (2)/mojoALU/work/planAhead"
+set projDir "/home/dudu/Desktop/8-Bit-ALU/work/planAhead"
 set projName "mojoALU"
 set topName top
 set device xc6slx9-2tqg144
 if {[file exists "$projDir/$projName"]} { file delete -force "$projDir/$projName" }
 create_project $projName "$projDir/$projName" -part $device
 set_property design_mode RTL [get_filesets sources_1]
-set verilogSources [list "C:/Users/San Persie/Desktop/New folder (2)/mojoALU/work/verilog/mojo_top_0.v" "C:/Users/San Persie/Desktop/New folder (2)/mojoALU/work/verilog/reset_conditioner_1.v" "C:/Users/San Persie/Desktop/New folder (2)/mojoALU/work/verilog/alu_2.v" "C:/Users/San Persie/Desktop/New folder (2)/mojoALU/work/verilog/adder_3.v" "C:/Users/San Persie/Desktop/New folder (2)/mojoALU/work/verilog/comparator_4.v" "C:/Users/San Persie/Desktop/New folder (2)/mojoALU/work/verilog/boolean_5.v" "C:/Users/San Persie/Desktop/New folder (2)/mojoALU/work/verilog/shifter_6.v" "C:/Users/San Persie/Desktop/New folder (2)/mojoALU/work/verilog/multiply_7.v" "C:/Users/San Persie/Desktop/New folder (2)/mojoALU/work/verilog/multi_seven_seg_8.v" "C:/Users/San Persie/Desktop/New folder (2)/mojoALU/work/verilog/counter_9.v" "C:/Users/San Persie/Desktop/New folder (2)/mojoALU/work/verilog/seven_seg_10.v" "C:/Users/San Persie/Desktop/New folder (2)/mojoALU/work/verilog/decoder_11.v"]
+set verilogSources [list "/home/dudu/Desktop/8-Bit-ALU/work/verilog/mojo_top_0.v" "/home/dudu/Desktop/8-Bit-ALU/work/verilog/reset_conditioner_1.v" "/home/dudu/Desktop/8-Bit-ALU/work/verilog/alu_2.v" "/home/dudu/Desktop/8-Bit-ALU/work/verilog/testcase_3.v" "/home/dudu/Desktop/8-Bit-ALU/work/verilog/adder_4.v" "/home/dudu/Desktop/8-Bit-ALU/work/verilog/comparator_5.v" "/home/dudu/Desktop/8-Bit-ALU/work/verilog/boolean_6.v" "/home/dudu/Desktop/8-Bit-ALU/work/verilog/shifter_7.v" "/home/dudu/Desktop/8-Bit-ALU/work/verilog/multiply_8.v" "/home/dudu/Desktop/8-Bit-ALU/work/verilog/multi_seven_seg_9.v" "/home/dudu/Desktop/8-Bit-ALU/work/verilog/edge_detector_10.v" "/home/dudu/Desktop/8-Bit-ALU/work/verilog/button_conditioner_11.v" "/home/dudu/Desktop/8-Bit-ALU/work/verilog/multi_seven_seg_9.v" "/home/dudu/Desktop/8-Bit-ALU/work/verilog/counter_13.v" "/home/dudu/Desktop/8-Bit-ALU/work/verilog/seven_seg_14.v" "/home/dudu/Desktop/8-Bit-ALU/work/verilog/decoder_15.v" "/home/dudu/Desktop/8-Bit-ALU/work/verilog/pipeline_16.v" "/home/dudu/Desktop/8-Bit-ALU/work/verilog/counter_13.v" "/home/dudu/Desktop/8-Bit-ALU/work/verilog/seven_seg_14.v" "/home/dudu/Desktop/8-Bit-ALU/work/verilog/decoder_15.v"]
 import_files -fileset [get_filesets sources_1] -force -norecurse $verilogSources
-set ucfSources [list  "C:/Program\ Files/Mojo\ IDE/library/components/io_shield.ucf" "C:/Program\ Files/Mojo\ IDE/library/components/mojo.ucf"]
+set ucfSources [list  "/home/dudu/Mojo\ IDE/library/components/mojo.ucf" "/home/dudu/Mojo\ IDE/library/components/io_shield.ucf"]
 import_files -fileset [get_filesets constrs_1] -force -norecurse $ucfSources
 set_property -name {steps.bitgen.args.More Options} -value {-g Binary:Yes -g Compress} -objects [get_runs impl_1]
 set_property steps.map.args.mt on [get_runs impl_1]

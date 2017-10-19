@@ -25,7 +25,7 @@ module comparator ( // computes CMPEQ, CMPLT, CMPLE of A to B, gives op
        case binary 11: CMPLE ie compare less equals, A<=B
     */
     
-    if (a < b){
+    if (a <= b){
      test = 1;
       }
     else {

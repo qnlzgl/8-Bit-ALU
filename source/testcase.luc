@@ -1,15 +1,16 @@
 module testcase (
     input clk,  // clock 
     input rst,  // reset 
+    input io_button[5],
     output aout[8], 
     output bout[8], 
     output out[8],  // output result 
-    output alufn[6] //led indicates which state we are checking 
-    output io_seg [8],      // 7-segment LEDs on IO Shield
-    output io_sel [4]      // Digit select on IO Shield
+    output alufn[6], //led indicates which state we are checking 
+    output io_seg[8],      // 7-segment LEDs on IO Shield
+    output io_sel[4]      // Digit select on IO Shield
    )  
 
-  ) {
+   {
   sig a[8];
   sig b[8];
   sig opcode[6];
@@ -28,30 +29,32 @@ module testcase (
   }
 }
   
-  
   always {
   
-    io_seg = ~seg.seg; //connect segments to the driver
-    io_sel = ~seg.sel; //connect digit select to the driver  
     opcode = 0;
     out = my_alu.out;
-    a_out = a;
-    b_out = b;
     alufn = opcode;
     
     // button and edge detector configure
     button_cond.in = io_button[1];
     edge_detector.in = button_cond.out;
+    seg.values = {4hF, 4hF, 4hF, 4hF};
     
     case(state.q){
           state.START:
              seg.values = {4hD, 4h7, 4h6, 4hE};
+             io_seg = ~seg.seg; //connect segments to the driver
+             io_sel = ~seg.sel; //connect digit select to the driver  
+             a = 0;
+             b = 0;
              if (edge_detector.out)
              state.d = state.ADD;
           
           state.ADD:
              opcode = 6b00000;
              alufn = opcode;
+             io_seg = my_alu.io_seg;
+             io_sel = my_alu.io_sel;
              a = 62;
              b = 8;
              if (my_alu.out == 70 && edge_detector.out)
@@ -60,6 +63,8 @@ module testcase (
           state.SUB:
               opcode = 6h01;
               alufn = opcode;
+              io_seg = my_alu.io_seg;
+              io_sel = my_alu.io_sel;
               a = 62;
               b = 8;
               if (my_alu.out == 54 && edge_detector.out)
@@ -68,6 +73,8 @@ module testcase (
           state.MUL:
               opcode = 6h03;
               alufn = opcode;
+              io_seg = my_alu.io_seg;
+              io_sel = my_alu.io_sel;
               a = 6;
               b = 8;
               if (my_alu.out == 48 && edge_detector.out)
@@ -76,6 +83,8 @@ module testcase (
           state.DIV:
               opcode = 6h02;
               alufn = opcode;
+              io_seg = my_alu.io_seg;
+              io_sel = my_alu.io_sel;
               a = 48;
               b = 8;
               if (my_alu.out == 6 && edge_detector.out)
@@ -84,6 +93,8 @@ module testcase (
           state.AND:
               opcode = 6h18;
               alufn = opcode;
+              io_seg = my_alu.io_seg;
+              io_sel = my_alu.io_sel;
               a = 6;
               b = 8;
               if (my_alu.out == 0 && edge_detector.out)
@@ -92,6 +103,8 @@ module testcase (
           state.OR:
               opcode = 6h1E;
               alufn = opcode;
+              io_seg = my_alu.io_seg;
+              io_sel = my_alu.io_sel;
               a = 6;
               b = 8;
               if (my_alu.out == 14 && edge_detector.out)
@@ -100,6 +113,8 @@ module testcase (
           state.XOR:
               opcode = 6h16;
               alufn = opcode;
+              io_seg = my_alu.io_seg;
+              io_sel = my_alu.io_sel;
               a = 6;
               b = 8;
               if (my_alu.out == 14 && edge_detector.out)
@@ -108,30 +123,38 @@ module testcase (
           state.NAND:
               opcode = 6h17;
               alufn = opcode;
-              a = 6;
-              b = 8;
-              if (my_alu.out == 15 && edge_detector.out)
+              io_seg = my_alu.io_seg;
+              io_sel = my_alu.io_sel;
+              a = 13;
+              b = 25;
+              if (my_alu.out == 246 && edge_detector.out)
                 state.d = state.NOR;
           
           state.NOR:
-              opcode = 6h1;
+              opcode = 6h11;
               alufn = opcode;
+              io_seg = my_alu.io_seg;
+              io_sel = my_alu.io_sel;
               a = 6;
               b = 8;
-              if (my_alu.out == 1 && edge_detector.out)
+              if (my_alu.out == 241 && edge_detector.out)
                 state.d = state.XNOR;
           
           state.XNOR:
               opcode = 6h19;
               alufn = opcode;
+              io_seg = my_alu.io_seg;
+              io_sel = my_alu.io_sel;
               a = 6;
               b = 8;
-              if (my_alu.out == 1 && edge_detector.out)
+              if (my_alu.out == 241 && edge_detector.out)
                 state.d = state.A;
           
           state.A:
               opcode = 6h1A;
               alufn = opcode;
+              io_seg = my_alu.io_seg;
+              io_sel = my_alu.io_sel;
               a = 45;
               b = 21;
               if (my_alu.out == 45 && edge_detector.out)
@@ -140,6 +163,8 @@ module testcase (
           state.B:
               opcode = 6h1C;
               alufn = opcode;
+              io_seg = my_alu.io_seg;
+              io_sel = my_alu.io_sel;
               a = 32;
               b = 54;
               if (my_alu.out == 54 && edge_detector.out)
@@ -148,6 +173,8 @@ module testcase (
           state.SHL:
               opcode = 6h20;
               alufn = opcode;
+              io_seg = my_alu.io_seg;
+              io_sel = my_alu.io_sel;
               a = 15;
               b = 2;
               if (my_alu.out == 60 && edge_detector.out)
@@ -156,6 +183,8 @@ module testcase (
           state.SHR:
               opcode = 6h21;
               alufn = opcode;
+              io_seg = my_alu.io_seg;
+              io_sel = my_alu.io_sel;
               a = 64;
               b = 3;
               if (my_alu.out == 8 && edge_detector.out)
@@ -164,14 +193,18 @@ module testcase (
           state.SRA:
               opcode = 6h23;
               alufn = opcode;
-              a = -64;
+              io_seg = my_alu.io_seg;
+              io_sel = my_alu.io_sel;
+              a = 192; // -64 
               b = 4;
-              if (my_alu.out == -4 && edge_detector.out)
+              if (my_alu.out == 252 && edge_detector.out)
                 state.d = state.CMPEQ;
           
           state.CMPEQ:
               opcode = 6h33;
               alufn = opcode;
+              io_seg = my_alu.io_seg;
+              io_sel = my_alu.io_sel;
               a = 29;
               b = 9;
               if (my_alu.out == 0 && edge_detector.out)
@@ -180,6 +213,8 @@ module testcase (
           state.CMPLE:
               opcode = 6h35;
               alufn = opcode;
+              io_seg = my_alu.io_seg;
+              io_sel = my_alu.io_sel;
               a = 58;
               b = 58;
               if (my_alu.out == 1 && edge_detector.out)
@@ -188,6 +223,8 @@ module testcase (
           state.CMPLT:
               opcode = 6h37;
               alufn = opcode;
+              io_seg = my_alu.io_seg;
+              io_sel = my_alu.io_sel;
               a = 34;
               b = 6;
               if (my_alu.out == 0 && edge_detector.out)
@@ -195,7 +232,22 @@ module testcase (
           
           state.PASS:
               // display pass
+               seg.values = {4h4, 4h0, 4h8, 4h8};
+               io_seg = ~seg.seg; //connect segments to the driver
+               io_sel = ~seg.sel; //connect digit select to the driver
+               a = 0;
+               b = 0;
+
+      default:
+             seg.values = {4hF, 4hF, 4hF, 4hF};
+             io_seg = ~seg.seg; //connect segments to the driver
+             io_sel = ~seg.sel; //connect digit select to the driver  
+             a = 0;
+             b = 0;
+             
     }
+    aout = a;
+    bout = b;
 
   }
   
